@@ -13,7 +13,7 @@ class Neuron:
     
     def calculate_weights(self):
         self.W = np.array(
-            [1 if i == 0 else float(f"{random.uniform(0, 1):.2f}") for i in range(self.data.shape[1])])
+            [1 if i == 0 else float(f"{random.uniform(0, 1):.2f}") for i in range(self.data.shape[1] - 1)])
     
     def add_bias(self):
         ones_columns = np.ones((self.data.shape[0], 1))
@@ -33,7 +33,7 @@ class Neuron:
         self.add_bias()
         self.calculate_weights()
         for epoch in range(self.epochs):
-            u = np.linalg.multi_dot([self.data[:, 1:], np.transpose(self.W[1:])]) + self.W[0]
+            u = np.linalg.multi_dot([self.data[:, 1:-1], np.transpose(self.W[1:])]) + self.W[0]
             errors = np.array(self.Ydesired - self.step_function(u))
             delta = self.delta(errors)
             norm_error = np.linalg.norm(errors)
@@ -47,7 +47,13 @@ class Neuron:
             self.list_epoch.append(epoch_info)
             self.update_weights(delta)
     def delta(self, error):
-        return self.eta * np.dot(np.transpose(error), self.data)
+        return self.eta * np.dot(np.transpose(error), self.data[:, :-1])
     
     def update_weights(self, delta_x):
         self.W = np.round(np.add(self.W, delta_x), 4)
+    
+    def get_initial_weights(self):
+        return self.all_weights[0] if self.all_weights else None
+
+    def get_final_weights(self):
+        return self.all_weights[-1] if self.all_weights else None

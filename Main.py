@@ -5,7 +5,7 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.title('Sample Neuron')
-        self.geometry('200x300')
+        self.geometry('650x300')
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         

@@ -18,15 +18,15 @@ def plot_data(list_epoch):
 
     # Dibujar una línea para cada peso, excluyendo el sesgo x0 y la salida y
     plt.subplot(1, 2, 1)
-    for i in range(1, len(list_epoch[0]['weights']) - 1):
-        sns.lineplot(x='id', y='weight_'+str(i), data=df, label='weight_'+str(i), sort=False)
+    for i in range(1, len(list_epoch[0]['weights'])):
+        sns.lineplot(x='id', y='weight_'+str(i), data=df, label='weight '+str(i), sort=False)
     plt.title('Cambios en los pesos en cada iteración')
     plt.xlabel('Época')
     plt.ylabel('Pesos')
 
     # Dibujar una línea para error_norma
     plt.subplot(1, 2, 2)
-    sns.lineplot(x='id', y='error_norma', data=df, label='error_norma', color='r', sort=False)
+    sns.lineplot(x='id', y='error_norma', data=df, label='norma del error |e|', color='r', sort=False)
     plt.title('Norma del error en cada iteración')
     plt.xlabel('Época')
     plt.ylabel('Norma del error')
