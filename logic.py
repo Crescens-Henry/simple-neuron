@@ -1,27 +1,53 @@
-from tkinter import filedialog
-import pandas as pd
-import os
+import random
 import numpy as np
 
-
 class Neuron:
-    def __init__(self):
-        self.matrix = None
+    def __init__(self, eta, epochs, data):
+        self.data = data
+        self.eta = eta
+        self.epochs = epochs
+        self.Ydesired = self.data[:, -1]
+        self.W = []
+        self.all_weights = []
+        self.list_epoch = []
     
-    def upload_csv(self, label_response):
-        filename = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
-        if filename:
-            base_name = os.path.basename(filename)
-            label_response.configure(text=base_name)
-            label_response.update()
-            data = pd.read_csv(filename)
-            vector = data.values.flatten() 
-            num_rows = data.shape[0]
-            num_cols = data.shape[1]
-            self.matrix = np.reshape(vector, (num_rows, num_cols))
+    def calculate_weights(self):
+        self.W = np.array(
+            [1 if i == 0 else float(f"{random.uniform(0, 1):.2f}") for i in range(self.data.shape[1])])
     
-    def start(self):
-        if self.matrix is not None:
-            print("Starting...")
-        else:
-            print("No matrix loaded")
+    def add_bias(self):
+        ones_columns = np.ones((self.data.shape[0], 1))
+        self.data = np.hstack((ones_columns, self.data))
+
+    def step_function(self, u):
+        result = []
+        for x in u:
+            if x >= 0:
+                result.append(1)
+            else:
+                result.append(0)
+        return result
+        
+    
+    def start_optimization(self):
+        self.add_bias()
+        self.calculate_weights()
+        for epoch in range(self.epochs):
+            u = np.linalg.multi_dot([self.data[:, 1:], np.transpose(self.W[1:])]) + self.W[0]
+            errors = np.array(self.Ydesired - self.step_function(u))
+            delta = self.delta(errors)
+            norm_error = np.linalg.norm(errors)
+            self.all_weights.append(self.W)
+            epoch_info = {
+                "id": epoch,
+                "norm_error": norm_error,
+                "weights": self.W.tolist(), 
+                "all_weights": [w.tolist() for w in self.all_weights] 
+            }
+            self.list_epoch.append(epoch_info)
+            self.update_weights(delta)
+    def delta(self, error):
+        return self.eta * np.dot(np.transpose(error), self.data)
+    
+    def update_weights(self, delta_x):
+        self.W = np.round(np.add(self.W, delta_x), 4)
