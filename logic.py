@@ -53,7 +53,7 @@ class Neuron:
         self.W = np.round(np.add(self.W, delta_x), 4)
     
     def get_initial_weights(self):
-        return self.all_weights[0] if self.all_weights else None
+        return self.all_weights[0][1:] if self.all_weights else None
 
     def get_final_weights(self):
-        return self.all_weights[-1] if self.all_weights else None
+        return self.all_weights[-1][1:] if self.all_weights else None

@@ -16,7 +16,7 @@ def plot_data(list_epoch):
 
     plt.subplot(1, 2, 1)
     for i in range(1, len(list_epoch[0]['weights'])):
-        sns.lineplot(x='id', y='weight_'+str(i), data=df, label='weight '+str(i), sort=False)
+        sns.lineplot(x='id', y='weight_'+str(i), data=df, label='Peso '+str(i), sort=False)
     plt.title('Cambios en los pesos en cada iteración')
     plt.xlabel('Época')
     plt.ylabel('Pesos')
