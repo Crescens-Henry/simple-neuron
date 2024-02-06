@@ -5,6 +5,7 @@ import pandas as pd
 import Plots
 
 from logic import Neuron
+from pandas.errors import EmptyDataError
 
 class Frame_Input(customtkinter.CTkFrame):
     
@@ -45,7 +46,18 @@ class Frame_Input(customtkinter.CTkFrame):
             base_name = os.path.basename(filename)
             self.label_response.configure(text=f"{base_name}\nCargado exitosamente", text_color="green")
             self.label_response.update()
-            data = pd.read_csv(filename, sep=";")
+            try:
+                data = pd.read_csv(filename, sep=";")
+                self.button_start.configure(state="enabled")
+            except EmptyDataError:
+                self.label_response.configure(text="El archivo esta vacio\nintente con otro", text_color="red")
+                self.label_response.update()
+                self.button_start.configure(state="disabled")
+                return
+            except Exception as e:
+                self.label_response.configure(text=f"Error: {e}", text_color="red")
+                self.label_response.update()
+                return
         self.data = data.values
         
     def button_start(self):
